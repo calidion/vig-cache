@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.org/calidion/vig-cache.svg?branch=master)](https://travis-ci.org/calidion/vig-cache.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/calidion/vig-cache/badge.svg?branch=master)](https://coveralls.io/github/calidion/vig-cache?branch=master)
-[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
-# KV urlbased
+# KVCache
 
+ Key-value based Cache taking params, queries, session info into account
 
 ```ts
 import { KVCache } from "vig-cache";
