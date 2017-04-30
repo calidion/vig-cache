@@ -42,9 +42,9 @@ export class KVCache {
     const params = req.params;
     const query = req.query;
     const hashes: any = {
-      url: this.marshall(url),
       params: this.marshall(params),
-      query: this.marshall(query)
+      query: this.marshall(query),
+      url: this.marshall(url)
     };
     if (user) {
       hashes.user = this.marshall({ id: String(user.id) });
@@ -82,7 +82,6 @@ export class KVCache {
     if (typeof params !== "object") {
       return "";
     }
-    params = params || {};
     const keys = Object.keys(params).sort();
     const obj = {};
     const kvs = [];

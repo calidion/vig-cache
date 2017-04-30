@@ -25,8 +25,12 @@ app.use(session({
 
 describe("Cache", () => {
   it("should create kvCache", () => {
+    cache = new KVCache(redis, 1);
     cache = new KVCache(redis);
+    cache.sign();
     cache.attach(app);
+    cache.check({});
+    cache.check({}, {});
     cache.clear('/', null);
     cache.clear({
       originalUrl: '/cache'
