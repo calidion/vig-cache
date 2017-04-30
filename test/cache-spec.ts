@@ -58,7 +58,6 @@ describe("Cache", () => {
     let b = cache.generate({});
     let c = cache.generate({body: {b: 1}, params: {a: 1}});
     let d = cache.generate({body: {b: 1}, params: {a: 1}}, {id: 1});
-    console.log(a, b, c, a1, d);
     assert(a === a1);
     assert(a !== b);
     assert(a !== c);
@@ -72,7 +71,6 @@ describe("Cache", () => {
     assert(data === 100);
     await cache._clear('a');
     data = await cache._get('a');
-    console.log(data);
     assert(typeof data === 'undefined');
   });
 
@@ -88,24 +86,20 @@ describe("Cache", () => {
   it("should set req", async () => {
     await cache.set({}, null, 100);
     let data = await cache.get({});
-    console.log(data);
     assert(data.data === 100);
     assert(data.time);
     await cache.clear({});
     data = await cache.get({});
-    console.log(data);
     assert(typeof data === 'undefined');
   });
 
   it("should set req with user", async () => {
     await cache.set({}, { id: 1 }, 100);
     let data = await cache.get({}, { id: 1 });
-    console.log(data);
     assert(data.data === 100);
     assert(data.time);
     await cache.clear({}, { id: 1 });
     data = await cache.get({}, { id: 1 });
-    console.log(data);
     assert(typeof data === 'undefined');
   });
 
@@ -140,7 +134,6 @@ describe("Cache", () => {
       });
     });
     request(app).get('/cache').end(function (err, res) {
-      console.log(err, res.text);
       assert(!err);
       assert(res.text === 'cache');
       done();

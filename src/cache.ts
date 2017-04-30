@@ -39,12 +39,10 @@ export class KVCache {
   }
   public generate(req, user = null) {
     const url = req.originalUrl;
-    const body = req.body;
     const params = req.params;
     const query = req.query;
     const hashes: any = {
       url: this.marshall(url),
-      body: this.marshall(body),
       params: this.marshall(params),
       query: this.marshall(query)
     };
