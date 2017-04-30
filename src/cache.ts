@@ -6,11 +6,22 @@ export class KVCache {
   protected store;
   protected timeout;
   protected name;
+  /**
+   * Constructor for KVCache
+   *
+   * @param redis Redis instance
+   * @param timeout timeout for cache, defaults to 5 minutes.
+   * @param name which session name do you choose to use? MUST have the id property.
+   */
   constructor(redis, timeout = 5 * 60, name = "user") {
     this.store = redis;
     this.timeout = timeout;
     this.name = name;
   }
+  /**
+   *
+   * @param app expressjs compatible server instance
+   */
   public attach(app) {
     app.use(async (req, res, next) => {
       let expireTime = await this._get(req.originalUrl);
