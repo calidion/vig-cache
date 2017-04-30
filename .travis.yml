@@ -2,7 +2,10 @@ language: node_js
 node_js:
   - '7'
   - '6'
+  - '5'
   - '4'
+services:
+  - redis-server
 script:
   - npm run build  # build
   - npm run coverage  # run mocha unit tests with coverage
