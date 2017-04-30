@@ -52,6 +52,20 @@ describe("Cache", () => {
     assert(b === 'a=100');
   });
 
+  it("should generate", () => {
+    let a = cache.generate({}, {id:1});
+    let a1 = cache.generate({}, {id:1});
+    let b = cache.generate({});
+    let c = cache.generate({body: {b: 1}, params: {a: 1}});
+    let d = cache.generate({body: {b: 1}, params: {a: 1}}, {id: 1});
+    console.log(a, b, c, a1, d);
+    assert(a === a1);
+    assert(a !== b);
+    assert(a !== c);
+    assert(c !== b);
+    assert(c !== d);
+  });
+
   it("should set a k", async () => {
     await cache._set('a', 100);
     let data = await cache._get('a');

@@ -49,7 +49,7 @@ export class KVCache {
       query: this.marshall(query)
     };
     if (user) {
-      hashes.user = this.marshall({ id: user.id });
+      hashes.user = this.marshall({ id: String(user.id) });
     }
     return this.sign(hashes);
   }
