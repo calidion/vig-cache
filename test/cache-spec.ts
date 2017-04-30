@@ -9,6 +9,19 @@ import * as request from "supertest";
 let redis = Redis.createClient(config);
 let cache;
 let app = express();
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+
+app.use(session({
+  secret: 'sfddsfs',
+  store: new RedisStore(config),
+  cookie: {
+    secure: false
+  },
+  resave: false,
+  saveUninitialized: false
+}));
+
 
 describe("Cache", () => {
   it("should create kvCache", () => {
@@ -18,6 +31,11 @@ describe("Cache", () => {
     cache.clear({
       originalUrl: '/cache'
     }, null);
+  });
+
+  it("should marshall an buffer", () => {
+    let a = cache.marshall(new Buffer('xsdfisfidf'));
+    assert(a === '');
   });
 
   it("should marshall an object", () => {

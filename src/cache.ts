@@ -74,6 +74,16 @@ export class KVCache {
   }
 
   protected marshall(params) {
+    if (params instanceof Buffer) {
+      try {
+        params = JSON.parse(String(params));
+      } catch (e) {
+        return "";
+      }
+    }
+    if (typeof params !== "object") {
+      return "";
+    }
     params = params || {};
     const keys = Object.keys(params).sort();
     const obj = {};
