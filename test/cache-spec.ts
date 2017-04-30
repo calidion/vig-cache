@@ -11,6 +11,7 @@ let cache;
 let app = express();
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
+let cookies;
 
 app.use(session({
   secret: 'sfddsfs',
@@ -57,11 +58,11 @@ describe("Cache", () => {
   });
 
   it("should generate", () => {
-    let a = cache.generate({}, {id:1});
-    let a1 = cache.generate({}, {id:1});
+    let a = cache.generate({}, { id: 1 });
+    let a1 = cache.generate({}, { id: 1 });
     let b = cache.generate({});
-    let c = cache.generate({body: {b: 1}, params: {a: 1}});
-    let d = cache.generate({body: {b: 1}, params: {a: 1}}, {id: 1});
+    let c = cache.generate({ body: { b: 1 }, params: { a: 1 } });
+    let d = cache.generate({ body: { b: 1 }, params: { a: 1 } }, { id: 1 });
     assert(a === a1);
     assert(a !== b);
     assert(a !== c);
@@ -126,18 +127,27 @@ describe("Cache", () => {
     });
   });
 
-  it("should request with cache", (done) => {
+  it("should request with cookies", (done) => {
     app.get('/cache', function (req, res) {
       if (req.cache.data) {
         return res.send(req.cache.data);
       }
-      const user = req.session ? req.session.user : undefined;
+      let user = {
+        id: 100
+      };
+      req.session.user = user;
       req.cache.cache.set(req, user, 'hello').then(async function () {
         let data = await req.cache.cache.get(req, user);
+
         res.send('cache');
       });
     });
     request(app).get('/cache').end(function (err, res) {
+      let re = new RegExp('; path=/; httponly', 'gi');
+      cookies = res.headers['set-cookie']
+        .map(function (r) {
+          return r.replace(re, '');
+        }).join("; ");
       assert(!err);
       assert(res.text === 'cache');
       done();
@@ -145,9 +155,19 @@ describe("Cache", () => {
   });
 
   it("should get cache", (done) => {
-    request(app).get('/cache').end(function (err, res) {
+    var req = request(app).get('/cache');
+    req.cookies = cookies;
+    req.end(function (err, res) {
       assert(!err);
       assert(res.text === 'hello');
+      done();
+    });
+  });
+  it("should get cache", (done) => {
+    var req = request(app).get('/cache');
+    req.end(function (err, res) {
+      assert(!err);
+      assert(res.text === 'cache');
       done();
     });
   });

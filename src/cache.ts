@@ -16,7 +16,10 @@ export class KVCache {
         expireTime = new Date().getTime();
         await this._set(req.originalUrl, expireTime);
       }
-      const user = req.session ? req.session.user : undefined;
+      let user;
+      if (req.session && req.session.user) {
+        user = req.session.user;
+      }
       const data: any = await this.check(req, user);
       req.cache = {
         cache: this
