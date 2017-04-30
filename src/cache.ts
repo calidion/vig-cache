@@ -5,9 +5,11 @@ import * as redis from "redis";
 export class KVCache {
   protected store;
   protected timeout;
-  constructor(redis, timeout = 5 * 60) {
+  protected name;
+  constructor(redis, timeout = 5 * 60, name = "user") {
     this.store = redis;
     this.timeout = timeout;
+    this.name = name;
   }
   public attach(app) {
     app.use(async (req, res, next) => {
@@ -17,8 +19,8 @@ export class KVCache {
         await this._set(req.originalUrl, expireTime);
       }
       let user;
-      if (req.session && req.session.user) {
-        user = req.session.user;
+      if (req.session && req.session[this.name]) {
+        user = req.session[this.name];
       }
       const data: any = await this.check(req, user);
       req.cache = {

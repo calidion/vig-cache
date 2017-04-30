@@ -27,7 +27,9 @@ app.use(session({
 describe("Cache", () => {
   it("should create kvCache", () => {
     cache = new KVCache(redis, 1);
+    cache = new KVCache(redis, 1, 'admin');
     cache = new KVCache(redis);
+    cache.set('a');
     cache.sign();
     cache.attach(app);
     cache.check({});
