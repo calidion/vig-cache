@@ -179,7 +179,29 @@ describe("Cache", () => {
     var data1 = await cache.getJSON('json1', { id: 1 });
     assert.deepEqual(json1, data1);
     cache.setJSON('json2');
+  });
 
+  it("should get json", async () => {
+    var json = { a: '100' };
+    await cache.setJSON({ originalUrl: '1' }, null, json);
+    var data = await cache.getJSON({ originalUrl: '1' });
+    assert.deepEqual(json, data);
+
+    var json1 = { a: '100' };
+    await cache.setJSON({ originalUrl: '2' }, { id: 1 }, json1);
+    var data1 = await cache.getJSON({ originalUrl: '2' }, { id: 1 });
+    assert.deepEqual(json1, data1);
+
+    var data2 = await cache.getJSON({ originalUrl: '1' });
+    assert.deepEqual(json, data2);
+
+    await cache.clear({ originalUrl: '1' });
+    await cache.clear({ originalUrl: '2' });
+
+    var dataCleared = await cache.getJSON({ originalUrl: '1' });
+    var dataCleared1 = await cache.getJSON({ originalUrl: '2' });
+    assert(!dataCleared);
+    assert(!dataCleared1);
   });
 
   it("should _promiseJSON", (done) => {

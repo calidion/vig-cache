@@ -61,7 +61,7 @@ export class KVCache {
     const hashes: any = {
       params: this.marshall(params),
       query: this.marshall(query),
-      url: this.marshall(url)
+      url: req.originalUrl
     };
     if (user) {
       hashes.user = this.marshall({ id: String(user.id) });
