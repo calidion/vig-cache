@@ -6,6 +6,19 @@
  Key-value based Cache taking url, params, query and session info into account.
  
  Very simple to use. JSON is recommanded, but String can be saved too.
+ 
+# Improvement
+
+Before:
+```
+Requests per second:    12.98 [#/sec] (mean)
+```
+
+After:
+```
+Requests per second:    307.32 [#/sec] (mean)
+```
+
 
 ```ts
 // for ts
