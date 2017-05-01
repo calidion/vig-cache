@@ -129,8 +129,6 @@ describe("Cache", () => {
 
   it("should request with cookies", (done) => {
     app.get('/cache', function (req, res) {
-      console.log('get cache');
-      console.log(req.cache.data);
       if (req.cache.data) {
         return res.send(req.cache.data);
       }
@@ -141,7 +139,6 @@ describe("Cache", () => {
       var message = { message: 'hello' };
       req.cache.cache.setJSON(req, user, message).then(async function () {
         let data = await req.cache.cache.getJSON(req, user);
-        console.log(data);
         assert.deepEqual(message, data);
         res.send('cache');
       });

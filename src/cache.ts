@@ -91,7 +91,7 @@ export class KVCache {
   }
 
   public async setJSON(req, user = null, data) {
-    if (typeof data !== 'object') {
+    if (typeof data !== "object") {
       return Promise.resolve();
     }
     const k = this.generate(req, user);
@@ -155,7 +155,6 @@ export class KVCache {
   protected _promiseJSON(resolve, reject) {
     return (error, data) => {
       if (error) {
-        console.error(error);
         return reject(error);
       }
       resolve(data);
