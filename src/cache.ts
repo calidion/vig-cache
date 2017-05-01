@@ -40,6 +40,7 @@ export class KVCache {
       if (data && data.data && (data.time > expireTime)) {
         req.cache.data = data.data;
       } else {
+        this.clear(req);
         this.clear(req, user);
       }
       next();
