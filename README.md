@@ -28,12 +28,30 @@ let config = {
 };
 let redis = Redis.createClient(config);
 
-const KVCache = new KVCache(redis);
-KVCache.setJSON(req, user, {value: 100});
-KVCache.getJSON(req, user);
-KVCache.set(req, user, 'string');
+const cache = new KVCache(redis);
+
+// JSON storage
+cache.setJSON(req, user, {value: 100});
+cache.getJSON(req, user);
+
+// String storage
+
+cache.set(req, user, 'string');
 let saved = KVCache.get(req, user');
-KVCache.clear(req);   // For Both JSON and String
+cache.clear(req);   // For Both JSON and String
+
+// with Expressjs
+
+cache.attach(app)
+
+app.get('/', function(req, res) {
+  if (req.cache.data) {
+     return res.send(req.cache.data.text)
+  }
+  req.cache.setJSON(req, user, {text: 'toBeCached'}, function(error) {
+    res.send('toBeCached');
+  });
+});
 ```
 
 ## Setting travis and coveralls badges
