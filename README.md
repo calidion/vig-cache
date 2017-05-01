@@ -19,6 +19,7 @@ After:
 Requests per second:    307.32 [#/sec] (mean)
 ```
 
+## Usage
 
 ```ts
 // for ts
