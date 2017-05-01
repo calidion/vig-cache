@@ -3,7 +3,9 @@
 
 # KVCache
 
- Key-value based Cache taking params, queries, session info into account
+ Key-value based Cache taking url, params, query and session info into account.
+ 
+ Very simple to use. JSON is recommanded, but String can be saved too.
 
 ```ts
 import { KVCache } from "vig-cache";
@@ -17,9 +19,11 @@ let config = {
 let redis = Redis.createClient(config);
 
 const KVCache = new KVCache(redis);
-KVCache.set('key', 'vaule');
-KVCache.get('key');
-KVCache.clear('key');
+KVCache.setJSON('key', user, {value: 100});
+KVCache.getJSON('key', user);
+KVCache.set('key', user, 'string');
+let saved = KVCache.get('key', user');
+KVCache.clear('key');   // For Both JSON and String
 ```
 
 - To use the `KVCache` class in a JavaScript file -
@@ -37,9 +41,13 @@ let config = {
 let redis = Redis.createClient(config);
 
 const KVCache = new KVCache('World!');
-KVCache.set('key', 'vaule');
-KVCache.get('key');
-KVCache.clear('key');
+const user = req.session.user;
+
+KVCache.setJSON('key', user, {value: 100});
+let saved = KVCache.getJSON('key', user);
+KVCache.set('key', user, 'string');
+let saved = KVCache.get('key', user');
+KVCache.clear('key');   // For Both JSON and String
 ```
 
 ## Setting travis and coveralls badges
