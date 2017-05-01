@@ -8,9 +8,19 @@
  Very simple to use. JSON is recommanded, but String can be saved too.
 
 ```ts
+// for ts
 import { KVCache } from "vig-cache";
 import * as redis from "redis";
+```
+or
+```js
+// for js
+const KVCache = require('vig-cache').KVCache;
+const Redis = require("redis");
+```
+then
 
+```
 let config = {
   host: '127.0.0.1',
   port: 6379,
@@ -19,35 +29,11 @@ let config = {
 let redis = Redis.createClient(config);
 
 const KVCache = new KVCache(redis);
-KVCache.setJSON('key', user, {value: 100});
-KVCache.getJSON('key', user);
-KVCache.set('key', user, 'string');
-let saved = KVCache.get('key', user');
-KVCache.clear('key');   // For Both JSON and String
-```
-
-- To use the `KVCache` class in a JavaScript file -
-
-```js
-const KVCache = require('vig-cache').KVCache;
-const Redis = require("redis");
-
-let config = {
-  host: '127.0.0.1',
-  port: 6379,
-  db: 0
-};
-
-let redis = Redis.createClient(config);
-
-const KVCache = new KVCache('World!');
-const user = req.session.user;
-
-KVCache.setJSON('key', user, {value: 100});
-let saved = KVCache.getJSON('key', user);
-KVCache.set('key', user, 'string');
-let saved = KVCache.get('key', user');
-KVCache.clear('key');   // For Both JSON and String
+KVCache.setJSON(req, user, {value: 100});
+KVCache.getJSON(req, user);
+KVCache.set(req, user, 'string');
+let saved = KVCache.get(req, user');
+KVCache.clear(req);   // For Both JSON and String
 ```
 
 ## Setting travis and coveralls badges
