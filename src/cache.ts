@@ -33,12 +33,12 @@ export class KVCache {
       if (req.session && req.session[this.name]) {
         user = req.session[this.name];
       }
-      const data: any = await this.check(req, user);
+      const data: any = await this.getJSON(req, user);
       req.cache = {
         cache: this
       };
-      if (data && data.data && (data.time > expireTime)) {
-        req.cache.data = data.data;
+      if (data && data.time && (data.time - 0 > expireTime)) {
+        req.cache.data = data;
       } else {
         this.clear(req);
         this.clear(req, user);
@@ -68,10 +68,7 @@ export class KVCache {
     }
     return this.sign(hashes);
   }
-  public async check(req, user = null) {
-    const key = this.generate(req, user);
-    return await this._get(key);
-  }
+
   public async get(req, user = null) {
     const k = this.generate(req, user);
     return await this._get(k);
@@ -86,6 +83,20 @@ export class KVCache {
   public clear(req, user = null) {
     const k = this.generate(req, user);
     this._clear(k);
+  }
+
+  public async getJSON(req, user = null) {
+    const k = this.generate(req, user);
+    return await this._getJSON(k);
+  }
+
+  public async setJSON(req, user = null, data) {
+    if (typeof data !== 'object') {
+      return Promise.resolve();
+    }
+    const k = this.generate(req, user);
+    data.time = String(new Date().getTime());
+    await this._setJSON(k, data);
   }
 
   protected marshall(params) {
@@ -139,5 +150,26 @@ export class KVCache {
   }
   protected _clear(k) {
     this.store.del(k);
+  }
+
+  protected _promiseJSON(resolve, reject) {
+    return (error, data) => {
+      if (error) {
+        console.error(error);
+        return reject(error);
+      }
+      resolve(data);
+    }
+  }
+
+  protected _getJSON(k) {
+    return new Promise((resolve, reject) => {
+      this.store.hgetall(k, this._promiseJSON(resolve, reject));
+    });
+  }
+  protected _setJSON(k, v) {
+    return new Promise((resolve, reject) => {
+      this.store.hmset(k, v, this._promiseJSON(resolve, reject));
+    });
   }
 }

@@ -32,8 +32,6 @@ describe("Cache", () => {
     cache.set('a');
     cache.sign();
     cache.attach(app);
-    cache.check({});
-    cache.check({}, {});
     cache.clear('/', null);
     cache.clear({
       originalUrl: '/cache'
@@ -131,6 +129,8 @@ describe("Cache", () => {
 
   it("should request with cookies", (done) => {
     app.get('/cache', function (req, res) {
+      console.log('get cache');
+      console.log(req.cache.data);
       if (req.cache.data) {
         return res.send(req.cache.data);
       }
@@ -138,9 +138,11 @@ describe("Cache", () => {
         id: 100
       };
       req.session.user = user;
-      req.cache.cache.set(req, user, 'hello').then(async function () {
-        let data = await req.cache.cache.get(req, user);
-
+      var message = { message: 'hello' };
+      req.cache.cache.setJSON(req, user, message).then(async function () {
+        let data = await req.cache.cache.getJSON(req, user);
+        console.log(data);
+        assert.deepEqual(message, data);
         res.send('cache');
       });
     });
@@ -161,16 +163,33 @@ describe("Cache", () => {
     req.cookies = cookies;
     req.end(function (err, res) {
       assert(!err);
-      assert(res.text === 'hello');
+      assert(res.body.message === 'hello');
       done();
     });
   });
-  it("should get cache", (done) => {
-    var req = request(app).get('/cache');
-    req.end(function (err, res) {
-      assert(!err);
-      assert(res.text === 'cache');
+
+  it("should get json", async () => {
+    var json = { a: '100' };
+    cache.setJSON('json', null, json);
+    var data = await cache.getJSON('json');
+    assert.deepEqual(json, data);
+    cache.clear('json');
+    var dataCleared = await cache.getJSON('json');
+    assert(!dataCleared);
+
+    var json1 = { a: '100' };
+    cache.setJSON('json1', { id: 1 }, json1);
+    var data1 = await cache.getJSON('json1', { id: 1 });
+    assert.deepEqual(json1, data1);
+    cache.setJSON('json2');
+
+  });
+
+  it("should _promiseJSON", (done) => {
+    let func = cache._promiseJSON(null, function (error) {
+      assert(error);
       done();
     });
+    func(true);
   });
 });
