@@ -45,26 +45,25 @@ let redis = Redis.createClient(config);
 const cache = new KVCache(redis);
 
 // JSON storage
-cache.setJSON(req, user, {value: 100});
-cache.getJSON(req, user);
+await cache.setJSON(req, user, {value: 100});
+await cache.getJSON(req, user);
 
 // String storage
 
-cache.set(req, user, 'string');
-let saved = KVCache.get(req, user');
-cache.clear(req);   // For Both JSON and String
+await cache.set(req, user, 'string');
+let saved = await KVCache.get(req, user');
+await cache.clear(req);   // For Both JSON and String
 
 // with Expressjs
 
 cache.attach(app)
 
-app.get('/', function(req, res) {
+app.get('/', async function(req, res) {
   if (req.cache.data) {
      return res.send(req.cache.data.text)
   }
-  req.cache.setJSON(req, user, {text: 'toBeCached'}, function(error) {
-    res.send('toBeCached');
-  });
+ await req.cache.setJSON(req, user, {text: 'toBeCached'});
+ res.send('toBeCached');
 });
 ```
 
